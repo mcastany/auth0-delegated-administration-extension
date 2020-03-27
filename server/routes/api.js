@@ -21,7 +21,7 @@ import users from './users';
 export default (storage) => {
   const scriptManager = new ScriptManager(storage);
   const managementApiClient = middlewares.managementApiClient({
-    domain: config('AUTH0_CUSTOM_DOMAIN') || config('AUTH0_DOMAIN'),
+    domain: config('AUTH0_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
   });
@@ -116,7 +116,13 @@ export default (storage) => {
   api.use('/applications', managementApiClient, applications());
   api.use('/connections', managementApiClient, connections(scriptManager));
   api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
-  api.use('/users', managementApiClient, users(storage, scriptManager));
+  api.use('/users', (req, res, next) => {
+    tools.managementApi.getAccessToken(config('AUTH0_DOMAIN'), config('AUTH0_CLIENT_ID'), config('AUTH0_CLIENT_SECRET'))
+      .then(function(token) {
+        console.log('marcos', token)
+        next();
+      })
+  }, managementApiClient, users(storage, scriptManager));
   api.use('/logs', managementApiClient, logs(scriptManager));
   api.use('/me', me(scriptManager));
   api.get('/settings', (req, res, next) => {
