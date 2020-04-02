@@ -59,18 +59,6 @@
           "text": "Yes"
         }
       ]
-    },
-    "CUSTOM_SECRET_1": {
-      "description": "A secret",
-      "example": "example.com",
-      "required": false,
-      "type": "password"
-    },
-    "CUSTOM_SECRET_2": {
-      "description": "another secret",
-      "example": "example.com",
-      "required": false,
-      "type": "password"
     }
   }
 }
